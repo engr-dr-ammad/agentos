@@ -1,0 +1,883 @@
+{
+ "trigger.manual": {
+  "category": "Triggers",
+  "label": "Manual / form trigger",
+  "icon": "play",
+  "description": "Start the workflow by hand, from a task, or via the API.",
+  "fields": [
+   {
+    "key": "sample_input",
+    "label": "Sample input (JSON)",
+    "kind": "json",
+    "required": false,
+    "help": "Used for test runs.",
+    "default": {
+     "customer_name": "Ada Example"
+    },
+    "options": null,
+    "template": false
+   }
+  ],
+  "outputs": [
+   "default"
+  ]
+ },
+ "trigger.webhook": {
+  "category": "Triggers",
+  "label": "Webhook / form submission",
+  "icon": "webhook",
+  "description": "Start when an external system or web form POSTs JSON (HMAC-signed).",
+  "fields": [
+   {
+    "key": "sample_input",
+    "label": "Sample input (JSON)",
+    "kind": "json",
+    "required": false,
+    "help": "",
+    "default": {},
+    "options": null,
+    "template": false
+   }
+  ],
+  "outputs": [
+   "default"
+  ]
+ },
+ "trigger.schedule": {
+  "category": "Triggers",
+  "label": "Schedule",
+  "icon": "clock",
+  "description": "Run on a recurring schedule.",
+  "fields": [
+   {
+    "key": "cron",
+    "label": "Cron expression",
+    "kind": "text",
+    "required": true,
+    "help": "e.g. '0 9 * * 1' = every Monday 09:00",
+    "default": "0 9 * * 1",
+    "options": null,
+    "template": false
+   },
+   {
+    "key": "timezone",
+    "label": "Time zone",
+    "kind": "text",
+    "required": false,
+    "help": "",
+    "default": "UTC",
+    "options": null,
+    "template": false
+   }
+  ],
+  "outputs": [
+   "default"
+  ]
+ },
+ "agent": {
+  "category": "AI Agents",
+  "label": "AI agent",
+  "icon": "bot",
+  "description": "Run one of your AI agents on a clearly stated objective.",
+  "fields": [
+   {
+    "key": "agent_id",
+    "label": "Agent",
+    "kind": "agent",
+    "required": true,
+    "help": "",
+    "default": null,
+    "options": null,
+    "template": false
+   },
+   {
+    "key": "task",
+    "label": "Objective for this step",
+    "kind": "textarea",
+    "required": true,
+    "help": "",
+    "default": "Process the incoming request.",
+    "options": null,
+    "template": true
+   },
+   {
+    "key": "input",
+    "label": "Input given to the agent",
+    "kind": "textarea",
+    "required": false,
+    "help": "Only this data is shared with the agent.",
+    "default": "{{ trigger }}",
+    "options": null,
+    "template": true
+   },
+   {
+    "key": "timeout_seconds",
+    "label": "Timeout (seconds)",
+    "kind": "number",
+    "required": false,
+    "help": "",
+    "default": 300,
+    "options": null,
+    "template": false
+   },
+   {
+    "key": "max_attempts",
+    "label": "Max attempts (transient errors)",
+    "kind": "number",
+    "required": false,
+    "help": "",
+    "default": 3,
+    "options": null,
+    "template": false
+   },
+   {
+    "key": "on_error",
+    "label": "If this step fails",
+    "kind": "select",
+    "required": false,
+    "help": "",
+    "default": "fail",
+    "options": [
+     [
+      "fail",
+      "Stop the workflow"
+     ],
+     [
+      "continue",
+      "Continue (route to 'error' path)"
+     ]
+    ],
+    "template": false
+   }
+  ],
+  "outputs": [
+   "default",
+   "error"
+  ]
+ },
+ "logic.condition": {
+  "category": "Conditions",
+  "label": "If / else",
+  "icon": "split",
+  "description": "Route to the 'true' or 'false' path.",
+  "fields": [
+   {
+    "key": "left",
+    "label": "Value",
+    "kind": "text",
+    "required": true,
+    "help": "",
+    "default": null,
+    "options": null,
+    "template": true
+   },
+   {
+    "key": "op",
+    "label": "Comparison",
+    "kind": "select",
+    "required": false,
+    "help": "",
+    "default": "eq",
+    "options": [
+     [
+      "eq",
+      "equals"
+     ],
+     [
+      "neq",
+      "does not equal"
+     ],
+     [
+      "gt",
+      ">"
+     ],
+     [
+      "gte",
+      "\u2265"
+     ],
+     [
+      "lt",
+      "<"
+     ],
+     [
+      "lte",
+      "\u2264"
+     ],
+     [
+      "contains",
+      "contains"
+     ],
+     [
+      "exists",
+      "has a value"
+     ],
+     [
+      "truthy",
+      "is true"
+     ]
+    ],
+    "template": false
+   },
+   {
+    "key": "right",
+    "label": "Compare with",
+    "kind": "text",
+    "required": false,
+    "help": "",
+    "default": null,
+    "options": null,
+    "template": true
+   }
+  ],
+  "outputs": [
+   "true",
+   "false"
+  ]
+ },
+ "data.transform": {
+  "category": "Data operations",
+  "label": "Transform data",
+  "icon": "shuffle",
+  "description": "Build a new object from earlier results.",
+  "fields": [
+   {
+    "key": "mapping",
+    "label": "Fields (JSON of name \u2192 template)",
+    "kind": "json",
+    "required": true,
+    "help": "",
+    "default": {
+     "summary": "{{ trigger }}"
+    },
+    "options": null,
+    "template": false
+   }
+  ],
+  "outputs": [
+   "default"
+  ]
+ },
+ "data.validate": {
+  "category": "Data operations",
+  "label": "Validate data",
+  "icon": "check",
+  "description": "Check data against a JSON Schema; route to 'valid' or 'invalid'.",
+  "fields": [
+   {
+    "key": "value",
+    "label": "Value to validate",
+    "kind": "text",
+    "required": true,
+    "help": "",
+    "default": "{{ trigger }}",
+    "options": null,
+    "template": true
+   },
+   {
+    "key": "schema",
+    "label": "JSON Schema",
+    "kind": "json",
+    "required": true,
+    "help": "",
+    "default": {
+     "type": "object",
+     "required": [
+      "email"
+     ]
+    },
+    "options": null,
+    "template": false
+   }
+  ],
+  "outputs": [
+   "valid",
+   "invalid"
+  ]
+ },
+ "knowledge.search": {
+  "category": "Data operations",
+  "label": "Search knowledge",
+  "icon": "book",
+  "description": "Retrieve passages from selected knowledge bases.",
+  "fields": [
+   {
+    "key": "kb_ids",
+    "label": "Knowledge bases",
+    "kind": "kbs",
+    "required": true,
+    "help": "",
+    "default": null,
+    "options": null,
+    "template": false
+   },
+   {
+    "key": "query",
+    "label": "Search query",
+    "kind": "text",
+    "required": true,
+    "help": "",
+    "default": null,
+    "options": null,
+    "template": true
+   },
+   {
+    "key": "k",
+    "label": "Results",
+    "kind": "number",
+    "required": false,
+    "help": "",
+    "default": 5,
+    "options": null,
+    "template": false
+   }
+  ],
+  "outputs": [
+   "default"
+  ]
+ },
+ "finance.price_check": {
+  "category": "Data operations",
+  "label": "Pricing rules check",
+  "icon": "calculator",
+  "description": "Deterministically compute totals and check pricing rules (no AI involved).",
+  "fields": [
+   {
+    "key": "items",
+    "label": "Line items",
+    "kind": "text",
+    "required": true,
+    "help": "List of {description, quantity, unit_price, discount_pct}",
+    "default": null,
+    "options": null,
+    "template": true
+   },
+   {
+    "key": "currency",
+    "label": "Currency",
+    "kind": "text",
+    "required": false,
+    "help": "",
+    "default": "EUR",
+    "options": null,
+    "template": false
+   },
+   {
+    "key": "tax_rate_pct",
+    "label": "Tax rate %",
+    "kind": "number",
+    "required": false,
+    "help": "",
+    "default": 19,
+    "options": null,
+    "template": false
+   },
+   {
+    "key": "max_discount_pct",
+    "label": "Max discount %",
+    "kind": "number",
+    "required": false,
+    "help": "",
+    "default": 15,
+    "options": null,
+    "template": false
+   },
+   {
+    "key": "min_unit_price",
+    "label": "Min unit price",
+    "kind": "number",
+    "required": false,
+    "help": "",
+    "default": 0,
+    "options": null,
+    "template": false
+   },
+   {
+    "key": "max_total",
+    "label": "Max total without escalation",
+    "kind": "number",
+    "required": false,
+    "help": "",
+    "default": null,
+    "options": null,
+    "template": false
+   }
+  ],
+  "outputs": [
+   "ok",
+   "violation"
+  ]
+ },
+ "human.approval": {
+  "category": "Human approvals",
+  "label": "Request approval",
+  "icon": "shield",
+  "description": "Pause until an authorised person approves the exact action.",
+  "fields": [
+   {
+    "key": "title",
+    "label": "Approval title",
+    "kind": "text",
+    "required": true,
+    "help": "",
+    "default": "Approve action",
+    "options": null,
+    "template": true
+   },
+   {
+    "key": "action_node",
+    "label": "Action being approved",
+    "kind": "node",
+    "required": true,
+    "help": "The approval is bound to this action's exact payload.",
+    "default": null,
+    "options": null,
+    "template": false
+   },
+   {
+    "key": "reason",
+    "label": "Reason shown to approver",
+    "kind": "textarea",
+    "required": false,
+    "help": "",
+    "default": null,
+    "options": null,
+    "template": true
+   },
+   {
+    "key": "risks",
+    "label": "Risks",
+    "kind": "textarea",
+    "required": false,
+    "help": "",
+    "default": null,
+    "options": null,
+    "template": false
+   },
+   {
+    "key": "amount",
+    "label": "Financial amount",
+    "kind": "text",
+    "required": false,
+    "help": "",
+    "default": null,
+    "options": null,
+    "template": true
+   },
+   {
+    "key": "approver_role",
+    "label": "Who can approve",
+    "kind": "select",
+    "required": false,
+    "help": "",
+    "default": "manager",
+    "options": [
+     [
+      "manager",
+      "Manager or above"
+     ],
+     [
+      "admin",
+      "Admin or above"
+     ],
+     [
+      "owner",
+      "Owner only"
+     ]
+    ],
+    "template": false
+   },
+   {
+    "key": "expires_hours",
+    "label": "Expires after (hours)",
+    "kind": "number",
+    "required": false,
+    "help": "",
+    "default": 72,
+    "options": null,
+    "template": false
+   }
+  ],
+  "outputs": [
+   "default"
+  ]
+ },
+ "human.task": {
+  "category": "Human approvals",
+  "label": "Assign task to a person",
+  "icon": "user",
+  "description": "Create a task for a team member (non-blocking).",
+  "fields": [
+   {
+    "key": "title",
+    "label": "Task title",
+    "kind": "text",
+    "required": true,
+    "help": "",
+    "default": null,
+    "options": null,
+    "template": true
+   },
+   {
+    "key": "description",
+    "label": "Details",
+    "kind": "textarea",
+    "required": false,
+    "help": "",
+    "default": null,
+    "options": null,
+    "template": true
+   },
+   {
+    "key": "priority",
+    "label": "Priority",
+    "kind": "select",
+    "required": false,
+    "help": "",
+    "default": "normal",
+    "options": [
+     [
+      "low",
+      "Low"
+     ],
+     [
+      "normal",
+      "Normal"
+     ],
+     [
+      "high",
+      "High"
+     ],
+     [
+      "urgent",
+      "Urgent"
+     ]
+    ],
+    "template": false
+   }
+  ],
+  "outputs": [
+   "default"
+  ]
+ },
+ "action.send_email": {
+  "category": "Actions",
+  "label": "Send email",
+  "icon": "mail",
+  "side_effect": true,
+  "sensitive": true,
+  "connection_kinds": [
+   "sandbox_email",
+   "smtp"
+  ],
+  "description": "Send an email through an authorised connection.",
+  "fields": [
+   {
+    "key": "connection_id",
+    "label": "Email connection",
+    "kind": "connection",
+    "required": true,
+    "help": "",
+    "default": null,
+    "options": null,
+    "template": false
+   },
+   {
+    "key": "to",
+    "label": "To",
+    "kind": "text",
+    "required": true,
+    "help": "",
+    "default": null,
+    "options": null,
+    "template": true
+   },
+   {
+    "key": "subject",
+    "label": "Subject",
+    "kind": "text",
+    "required": true,
+    "help": "",
+    "default": null,
+    "options": null,
+    "template": true
+   },
+   {
+    "key": "body",
+    "label": "Body",
+    "kind": "textarea",
+    "required": true,
+    "help": "",
+    "default": null,
+    "options": null,
+    "template": true
+   },
+   {
+    "key": "max_attempts",
+    "label": "Max attempts (transient errors)",
+    "kind": "number",
+    "required": false,
+    "help": "",
+    "default": 3,
+    "options": null,
+    "template": false
+   },
+   {
+    "key": "on_error",
+    "label": "If this step fails",
+    "kind": "select",
+    "required": false,
+    "help": "",
+    "default": "fail",
+    "options": [
+     [
+      "fail",
+      "Stop the workflow"
+     ],
+     [
+      "continue",
+      "Continue (route to 'error' path)"
+     ]
+    ],
+    "template": false
+   }
+  ],
+  "outputs": [
+   "default",
+   "error"
+  ]
+ },
+ "action.crm_upsert": {
+  "category": "Actions",
+  "label": "Create/update CRM record",
+  "icon": "database",
+  "side_effect": true,
+  "connection_kinds": [
+   "sandbox_crm"
+  ],
+  "description": "Create or update a customer record.",
+  "fields": [
+   {
+    "key": "connection_id",
+    "label": "CRM connection",
+    "kind": "connection",
+    "required": true,
+    "help": "",
+    "default": null,
+    "options": null,
+    "template": false
+   },
+   {
+    "key": "key",
+    "label": "Record key (e.g. email)",
+    "kind": "text",
+    "required": true,
+    "help": "",
+    "default": null,
+    "options": null,
+    "template": true
+   },
+   {
+    "key": "fields",
+    "label": "Fields (JSON of name \u2192 template)",
+    "kind": "json",
+    "required": true,
+    "help": "",
+    "default": {
+     "status": "quoted"
+    },
+    "options": null,
+    "template": false
+   },
+   {
+    "key": "max_attempts",
+    "label": "Max attempts (transient errors)",
+    "kind": "number",
+    "required": false,
+    "help": "",
+    "default": 3,
+    "options": null,
+    "template": false
+   },
+   {
+    "key": "on_error",
+    "label": "If this step fails",
+    "kind": "select",
+    "required": false,
+    "help": "",
+    "default": "fail",
+    "options": [
+     [
+      "fail",
+      "Stop the workflow"
+     ],
+     [
+      "continue",
+      "Continue (route to 'error' path)"
+     ]
+    ],
+    "template": false
+   }
+  ],
+  "outputs": [
+   "default",
+   "error"
+  ]
+ },
+ "action.http_request": {
+  "category": "Integrations",
+  "label": "Call approved API",
+  "icon": "globe",
+  "side_effect": true,
+  "sensitive": true,
+  "connection_kinds": [
+   "http_api"
+  ],
+  "description": "Call an approved REST API (host locked to the connection).",
+  "fields": [
+   {
+    "key": "connection_id",
+    "label": "API connection",
+    "kind": "connection",
+    "required": true,
+    "help": "",
+    "default": null,
+    "options": null,
+    "template": false
+   },
+   {
+    "key": "method",
+    "label": "Method",
+    "kind": "select",
+    "required": false,
+    "help": "",
+    "default": "POST",
+    "options": [
+     [
+      "GET",
+      "GET"
+     ],
+     [
+      "POST",
+      "POST"
+     ],
+     [
+      "PUT",
+      "PUT"
+     ],
+     [
+      "PATCH",
+      "PATCH"
+     ],
+     [
+      "DELETE",
+      "DELETE"
+     ]
+    ],
+    "template": false
+   },
+   {
+    "key": "path",
+    "label": "Path",
+    "kind": "text",
+    "required": true,
+    "help": "",
+    "default": "/",
+    "options": null,
+    "template": true
+   },
+   {
+    "key": "body",
+    "label": "JSON body",
+    "kind": "textarea",
+    "required": false,
+    "help": "",
+    "default": null,
+    "options": null,
+    "template": true
+   },
+   {
+    "key": "timeout_seconds",
+    "label": "Timeout (seconds)",
+    "kind": "number",
+    "required": false,
+    "help": "",
+    "default": 30,
+    "options": null,
+    "template": false
+   },
+   {
+    "key": "max_attempts",
+    "label": "Max attempts (transient errors)",
+    "kind": "number",
+    "required": false,
+    "help": "",
+    "default": 3,
+    "options": null,
+    "template": false
+   },
+   {
+    "key": "on_error",
+    "label": "If this step fails",
+    "kind": "select",
+    "required": false,
+    "help": "",
+    "default": "fail",
+    "options": [
+     [
+      "fail",
+      "Stop the workflow"
+     ],
+     [
+      "continue",
+      "Continue (route to 'error' path)"
+     ]
+    ],
+    "template": false
+   }
+  ],
+  "outputs": [
+   "default",
+   "error"
+  ]
+ },
+ "control.delay": {
+  "category": "Control flow",
+  "label": "Wait",
+  "icon": "hourglass",
+  "description": "Pause for a fixed time (durable \u2014 survives restarts).",
+  "fields": [
+   {
+    "key": "seconds",
+    "label": "Seconds",
+    "kind": "number",
+    "required": true,
+    "help": "",
+    "default": 60,
+    "options": null,
+    "template": false
+   }
+  ],
+  "outputs": [
+   "default"
+  ]
+ },
+ "control.end": {
+  "category": "Control flow",
+  "label": "End",
+  "icon": "flag",
+  "description": "Finish and define the workflow result.",
+  "fields": [
+   {
+    "key": "result",
+    "label": "Result (JSON of name \u2192 template)",
+    "kind": "json",
+    "required": false,
+    "help": "",
+    "default": {},
+    "options": null,
+    "template": false
+   }
+  ],
+  "outputs": []
+ }
+}

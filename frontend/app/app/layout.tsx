@@ -10,6 +10,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useTheme } from "next-themes";
 import { useEffect, useMemo, useState } from "react";
+import { EditionBadge } from "@/components/edition";
 import { Logo } from "@/components/logo";
 import { Input, Loading } from "@/components/ui";
 import { get, post } from "@/lib/api";
@@ -39,7 +40,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
   const { resolvedTheme, setTheme } = useTheme();
   const [collapsed, setCollapsed] = useState(false);
   const [q, setQ] = useState("");
-  const isStudioEditor = /^\/app\/(studio|executions)\/[^/]+/.test(path);
+  const isStudioEditor = /^\/app\/(studio\/edit|executions\/view)/.test(path);
   const pending = useQuery({ queryKey: ["approvals", "count"], queryFn: () => get<{ pending: number }>("/approvals/count"),
     refetchInterval: 15_000, enabled: !!me.data?.org });
 
@@ -65,7 +66,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
     <div className="flex h-screen overflow-hidden bg-bg">
       <aside className={cn("flex shrink-0 flex-col border-r border-border bg-surface transition-[width]", collapsed ? "w-16" : "w-64")} aria-label="Primary">
         <div className="flex h-14 items-center justify-between px-4">
-          {!collapsed && <Link href="/app"><Logo /></Link>}
+          {!collapsed && <Link href="/app" className="flex items-center gap-2"><Logo /><EditionBadge compact /></Link>}
           <button onClick={toggle} className="rounded-md p-1.5 text-text-3 hover:bg-surface-2" aria-label={collapsed ? "Expand navigation" : "Collapse navigation"}>
             <ChevronsLeft className={cn("h-4 w-4 transition-transform", collapsed && "rotate-180")} />
           </button>

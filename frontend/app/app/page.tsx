@@ -3,6 +3,7 @@
 import { Bot, CheckCircle2, Circle, DollarSign, Inbox, PlayCircle, XCircle } from "lucide-react";
 import Link from "next/link";
 import { BarSeries } from "@/components/charts";
+import { EditionNotice } from "@/components/edition";
 import { Card, CardHeader, Loading, PageHeader, Stat, StatusBadge, buttonClass } from "@/components/ui";
 import { useList, useMe } from "@/lib/hooks";
 import type { Agent, Provider, Workflow } from "@/lib/types";
@@ -31,6 +32,7 @@ export default function OverviewPage() {
     <>
       <PageHeader title={`Good to see you, ${me.data?.user.name.split(" ")[0] ?? ""}`} description={`What's happening at ${me.data?.org?.name ?? "your company"}.`}
         actions={<><Link href="/app/tasks" className={buttonClass({ variant: "secondary" })}>New task</Link><Link href="/app/studio" className={buttonClass()}>Open Workflow Studio</Link></>} />
+      <div className="mb-6"><EditionNotice /></div>
       {showChecklist && (
         <Card className="mb-6">
           <CardHeader title="Get started" description="Four steps to your first automated workflow. The built-in sandbox model works without an API key." />
@@ -64,7 +66,7 @@ export default function OverviewPage() {
           {o.recent.length === 0 ? <p className="p-5 text-sm text-text-2">No runs yet. Test a workflow to see activity here.</p> : (
             <ul className="divide-y divide-border">
               {o.recent.map((r) => (
-                <li key={r.id}><Link href={`/app/executions/${r.id}`} className="flex items-center justify-between gap-3 px-5 py-3 text-sm hover:bg-surface-2">
+                <li key={r.id}><Link href={`/app/executions/view?id=${r.id}`} className="flex items-center justify-between gap-3 px-5 py-3 text-sm hover:bg-surface-2">
                   <span className="min-w-0"><span className="block truncate font-medium">{r.workflow}</span><span className="text-xs text-text-3">{ago(r.created_at)}{r.mode === "test" ? " · test" : ""}</span></span>
                   <StatusBadge status={r.status} /></Link></li>
               ))}

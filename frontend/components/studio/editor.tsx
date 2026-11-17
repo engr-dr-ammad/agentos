@@ -394,7 +394,7 @@ function Versions({ wf, onClose, onRestored }: { wf: Workflow; onClose: () => vo
     const w = await post<Workflow>(`/workflows/${wf.id}/versions/${v}/restore`);
     onRestored(w.draft!); toast.success(`Version ${v} restored into the draft`); onClose();
   };
-  const clone = async () => { const w = await post<Workflow>(`/workflows/${wf.id}/clone`); window.location.href = `/app/studio/${w.id}`; };
+  const clone = async () => { const w = await post<Workflow>(`/workflows/${wf.id}/clone`); window.location.href = `/app/studio/edit?id=${w.id}`; };
   return (
     <Dialog open onOpenChange={onClose} title="Version history" description="Published versions are immutable. Running executions always keep the version they started with." wide
       footer={<Button variant="secondary" onClick={clone}>Clone workflow</Button>}>

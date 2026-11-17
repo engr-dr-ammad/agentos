@@ -18,7 +18,7 @@ export default function Marketplace() {
   const [open, setOpen] = useState<Template | null>(null);
   const add = useAction((v: { id: string; test: boolean }) => post<Agent>("/agents/from-template", { template_id: v.id }), {
     success: "Added to your workspace as a draft", invalidate: [["agents"]],
-    onSuccess: (a, v) => router.push(`/app/workforce/${a.id}${v.test ? "?tab=test" : ""}`),
+    onSuccess: (a, v) => router.push(`/app/workforce/agent?id=${a.id}${v.test ? "&tab=test" : ""}`),
   });
   const cats = useMemo(() => ["All", ...Array.from(new Set((templates.data ?? []).map((t) => t.category))).sort()], [templates.data]);
   const list = (templates.data ?? []).filter((t) => (cat === "All" || t.category === cat) &&

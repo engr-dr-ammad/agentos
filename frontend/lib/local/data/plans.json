@@ -1,0 +1,38 @@
+{
+ "starter": {
+  "label": "Starter",
+  "agents": 5,
+  "workflows": 3,
+  "executions_per_month": 500,
+  "members": 3,
+  "documents": 50,
+  "integrations": 3
+ },
+ "business": {
+  "label": "Business",
+  "agents": 15,
+  "workflows": 20,
+  "executions_per_month": 5000,
+  "members": 15,
+  "documents": 1000,
+  "integrations": 15
+ },
+ "professional": {
+  "label": "Professional",
+  "agents": 50,
+  "workflows": 100,
+  "executions_per_month": 50000,
+  "members": 100,
+  "documents": 10000,
+  "integrations": 50
+ },
+ "enterprise": {
+  "label": "Enterprise",
+  "agents": null,
+  "workflows": null,
+  "executions_per_month": null,
+  "members": null,
+  "documents": null,
+  "integrations": null
+ }
+}

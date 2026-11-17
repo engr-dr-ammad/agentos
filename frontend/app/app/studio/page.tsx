@@ -54,7 +54,7 @@ export default function Studio() {
   const [starting, setStarting] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
   const create = useAction((v: { name: string; description: string; draft?: Definition }) => post<Workflow>("/workflows", v), {
-    invalidate: [["workflows"]], onSuccess: (w) => router.push(`/app/studio/${w.id}`) });
+    invalidate: [["workflows"]], onSuccess: (w) => router.push(`/app/studio/edit?id=${w.id}`) });
   const manager = can(me.data?.org?.role, "manager");
 
   const starter = async () => {
@@ -63,7 +63,7 @@ export default function Studio() {
     catch (e) { toast.error((e as Error).message); } finally { setStarting(false); }
   };
   const importFile = async (f: File) => {
-    try { const w = await post<Workflow>("/workflows/import", JSON.parse(await f.text())); router.push(`/app/studio/${w.id}`); }
+    try { const w = await post<Workflow>("/workflows/import", JSON.parse(await f.text())); router.push(`/app/studio/edit?id=${w.id}`); }
     catch (e) { toast.error(e instanceof SyntaxError ? "That file is not valid JSON" : (e as Error).message); }
   };
 
@@ -82,7 +82,7 @@ export default function Studio() {
       ) : (
         <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
           {wfs.data.map((w) => (
-            <Link key={w.id} href={`/app/studio/${w.id}`}><Card className="h-full p-5 transition-colors hover:border-accent/50">
+            <Link key={w.id} href={`/app/studio/edit?id=${w.id}`}><Card className="h-full p-5 transition-colors hover:border-accent/50">
               <div className="flex items-start justify-between gap-2"><h3 className="font-medium">{w.name}</h3><StatusBadge status={w.status} /></div>
               <p className="mt-1 line-clamp-2 text-sm text-text-2">{w.description || "No description"}</p>
               <p className="mt-4 text-xs text-text-3">{w.node_count} steps · {w.published_version ? `v${w.published_version} live` : "not published"} · last run {ago(w.last_run_at)}</p>

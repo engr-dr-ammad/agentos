@@ -4,6 +4,7 @@ import { Bot, CheckCircle2, KeyRound, Mail, Plug, Plus, Star, Trash2, XCircle } 
 import { useState } from "react";
 import { toast } from "sonner";
 import { Alert, Badge, Button, Card, CardHeader, Dialog, Field, Input, Loading, PageHeader, Select, StatusBadge, Switch, Tabs } from "@/components/ui";
+import { EditionNotice } from "@/components/edition";
 import { del, patch, post } from "@/lib/api";
 import { useAction, useList, useMe } from "@/lib/hooks";
 import type { Connection, Provider, Workflow } from "@/lib/types";
@@ -109,6 +110,7 @@ export default function Integrations() {
       <PageHeader title="Integrations" description="Bring your own AI models and connect the business apps your agents may act through."
         actions={admin && (tab === "models" ? <Button onClick={() => setPd("new")}><Plus className="h-4 w-4" aria-hidden />Connect AI model</Button> : tab === "apps" ? <Button onClick={() => setCd(true)}><Plus className="h-4 w-4" aria-hidden />Connect app</Button> : null)} />
       <div className="mb-5"><Tabs value={tab} onChange={setTab} items={[{ value: "models", label: "AI models", count: providers.data?.length }, { value: "apps", label: "Apps", count: conns.data?.length }, { value: "outbox", label: "Sandbox outbox" }]} /></div>
+      <div className="mb-4"><EditionNotice /></div>
       {!admin && <div className="mb-4"><Alert>Only admins can add or change integrations.</Alert></div>}
       {tab === "models" && (providers.isLoading ? <Loading /> : (
         <div className="grid gap-4 md:grid-cols-2">{providers.data?.map((p) => (

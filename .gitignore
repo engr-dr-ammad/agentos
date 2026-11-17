@@ -11,3 +11,4 @@ frontend/*.tsbuildinfo
 frontend/next-env.d.ts
 .logs/
 .DS_Store
+frontend/public/pdf.worker.min.mjs

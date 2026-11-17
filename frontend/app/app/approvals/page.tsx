@@ -35,7 +35,7 @@ function Card_({ a }: { a: Approval }) {
           <p className="mt-1 flex flex-wrap items-center gap-2 text-xs text-text-3">
             {a.requested_by_agent && <span className="inline-flex items-center gap-1"><Bot className="h-3 w-3" aria-hidden />Prepared by {a.requested_by_agent}</span>}
             <span>{a.workflow_name ?? "Agent task"} · {a.workflow_version ? `v${a.workflow_version}` : "draft test run"}</span><span>{ago(a.created_at)}</span>
-            <Link href={`/app/executions/${a.execution_id}`} className="text-accent hover:underline">View run</Link></p>
+            <Link href={`/app/executions/view?id=${a.execution_id}`} className="text-accent hover:underline">View run</Link></p>
         </div>
         <div className="flex items-center gap-2">
           {a.amount != null && <span className="text-lg font-semibold tabular-nums">{a.amount.toLocaleString(undefined, { style: "currency", currency: a.currency || "EUR" })}</span>}
@@ -93,7 +93,7 @@ export default function Approvals() {
             <div className="mt-3"><Code>{JSON.stringify(t.result, null, 2)}</Code></div></Card>))}</div>))}
       {tab === "failures" && (failed.isLoading ? <Loading /> : !failed.data?.length ? <EmptyState title="No failed runs" /> : (
         <div className="space-y-2">{failed.data.map((e) => (
-          <Link key={e.id} href={`/app/executions/${e.id}`}><Card className="flex items-center justify-between gap-4 p-4 hover:border-accent/50">
+          <Link key={e.id} href={`/app/executions/view?id=${e.id}`}><Card className="flex items-center justify-between gap-4 p-4 hover:border-accent/50">
             <div className="min-w-0"><p className="font-medium">{e.workflow_name ?? "Agent task"}</p><p className="truncate text-sm text-critical">{e.error}</p></div>
             <span className="shrink-0 text-xs text-text-3">{ago(e.created_at)}</span></Card></Link>))}<Badge className="mt-2">Showing the latest 50</Badge></div>))}
     </>

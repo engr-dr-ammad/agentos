@@ -25,7 +25,7 @@ export default function Workforce() {
     onSuccess: (p) => { setDraft({ name: p.name, description: p.description, department: p.department ?? "", escalation_contact: "", monthly_budget_usd: "", config: { ...emptyConfig(), ...p.config } }); setMode("manual"); },
   });
   const create = useAction((d: AgentDraft) => post<Agent>("/agents", toPayload(d)), {
-    success: "Agent created as a draft", invalidate: [["agents"]], onSuccess: (a) => router.push(`/app/workforce/${a.id}?tab=test`),
+    success: "Agent created as a draft", invalidate: [["agents"]], onSuccess: (a) => router.push(`/app/workforce/agent?id=${a.id}&tab=test`),
   });
   const manager = can(me.data?.org?.role, "manager");
   const groups = Object.entries((agents.data ?? []).reduce<Record<string, Agent[]>>((acc, a) => { (acc[a.department || "Unassigned"] ??= []).push(a); return acc; }, {}));
@@ -44,7 +44,7 @@ export default function Workforce() {
           <h2 className="mb-3 text-sm font-semibold text-text-2">{dept} <span className="font-normal text-text-3">· {list.length}</span></h2>
           <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
             {list.map((a) => (
-              <Link key={a.id} href={`/app/workforce/${a.id}`}>
+              <Link key={a.id} href={`/app/workforce/agent?id=${a.id}`}>
                 <Card className="h-full p-5 transition-colors hover:border-accent/50">
                   <div className="flex items-start justify-between gap-2">
                     <div className="flex items-center gap-3"><span className="grid h-9 w-9 place-items-center rounded-lg bg-accent-soft text-accent"><Bot className="h-4 w-4" aria-hidden /></span>

@@ -2,7 +2,7 @@
 
 import { ArrowLeft, FlaskConical, History, Play, Settings2 } from "lucide-react";
 import Link from "next/link";
-import { useParams, useRouter, useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useState } from "react";
 import { AgentForm, toPayload } from "@/components/agent-form";
 import { Alert, Badge, Button, Card, CardHeader, Code, Field, Loading, PageHeader, Select, Stat, StatusBadge, Tabs, Textarea } from "@/components/ui";
@@ -15,9 +15,9 @@ type TestResult = { status: string; error: string | null; output: { result: unkn
 type Tab = "configure" | "test" | "versions";
 
 function AgentDetail() {
-  const { id } = useParams<{ id: string }>();
-  const router = useRouter();
   const sp = useSearchParams();
+  const id = sp.get("id") ?? "";
+  const router = useRouter();
   const me = useMe();
   const [tab, setTab] = useState<Tab>((sp.get("tab") as Tab) || "configure");
   const agent = useList<Agent>(["agent", id], `/agents/${id}`);

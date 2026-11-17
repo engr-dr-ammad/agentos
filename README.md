@@ -2,9 +2,25 @@
 
 Create, connect and manage AI agents that handle everyday business tasks, with a visual drag-and-drop workflow studio, human approvals, and **your own choice of AI model**.
 
+**Try it now in your browser:** https://engr-dr-ammad.github.io/agentos/ (browser edition, no install)
+
 [![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/engr-dr-ammad/agentos?quickstart=1)
 
 > Build your AI workforce visually. Give every agent a job. Stay in control.
+
+## Two editions, one codebase
+
+| | Browser edition (GitHub Pages) | Server edition (Codespaces / Docker) |
+|---|---|---|
+| Link | https://engr-dr-ammad.github.io/agentos/ | your Codespace or server |
+| Where data lives | IndexedDB in your browser | PostgreSQL with row-level security |
+| Users | one person per browser | teams, roles, invitations, MFA |
+| AI models | your key, called directly from the browser | your key, encrypted on the server |
+| Email | sandbox outbox | real SMTP delivery |
+| Schedules / delays | while the tab is open | always (background worker) |
+| Webhooks, Stripe billing | — | ✅ |
+
+The browser edition is the same Next.js app built as a static site (`npm run build:pages`). It swaps the HTTP API for an in-browser implementation of the same routes (`frontend/lib/local/`), with the same workflow engine semantics: validation, checkpointed steps, approvals bound to a payload hash, duplicate protection and budgets. `.github/workflows/pages.yml` publishes it on every push. Use it for demos and personal use. Use the server edition for real multi-user business data.
 
 ## Run it
 

@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 
 import { Alert, Badge, Button, Card, CardHeader, Code, Field, Input, Loading, PageHeader, Select, Table, Tabs, Textarea } from "@/components/ui";
 import { patch, post } from "@/lib/api";
+import { withBase } from "@/lib/env";
 import { useAction, useList, useMe } from "@/lib/hooks";
 import type { Workflow } from "@/lib/types";
 import { can, dt } from "@/lib/utils";
@@ -46,7 +47,7 @@ function Security() {
   const start = useAction(() => post<{ secret: string; otpauth_uri: string }>("/auth/mfa/setup"), { onSuccess: setSetup });
   const enable = useAction(() => post("/auth/mfa/enable", { code }), { success: "Two-factor authentication enabled", invalidate: [["me"]], onSuccess: () => { setSetup(null); setCode(""); } });
   const disable = useAction(() => post("/auth/mfa/disable", { code }), { success: "Two-factor authentication disabled", invalidate: [["me"]], onSuccess: () => setCode("") });
-  const everywhere = useAction(() => post("/auth/logout-everywhere"), { onSuccess: () => { window.location.href = "/login"; } });
+  const everywhere = useAction(() => post("/auth/logout-everywhere"), { onSuccess: () => { window.location.href = withBase("/login"); } });
   const on = me.data?.user.mfa_enabled;
   return (
     <div className="space-y-6">

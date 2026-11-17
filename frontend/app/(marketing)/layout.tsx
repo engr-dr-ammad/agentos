@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { EditionBadge } from "@/components/edition";
 import { Logo } from "@/components/logo";
 import { buttonClass } from "@/components/button-class";
 
@@ -10,7 +11,7 @@ export default function MarketingLayout({ children }: { children: React.ReactNod
     <div className="min-h-screen bg-bg">
       <header className="sticky top-0 z-40 border-b border-border bg-bg/85 backdrop-blur">
         <div className="mx-auto flex h-14 max-w-6xl items-center justify-between px-5">
-          <Link href="/" aria-label="AgentOS home"><Logo /></Link>
+          <Link href="/" aria-label="AgentOS home" className="flex items-center gap-2"><Logo /><EditionBadge /></Link>
           <nav aria-label="Main" className="hidden gap-6 text-sm text-text-2 md:flex">
             {nav.map(([l, h]) => <Link key={h} href={h} className="hover:text-text">{l}</Link>)}
           </nav>

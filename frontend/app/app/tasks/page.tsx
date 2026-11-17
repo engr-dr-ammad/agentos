@@ -115,7 +115,7 @@ export default function Tasks() {
             </div>
             <div className="grid gap-4 sm:grid-cols-2">
               <div><p className="mb-1 flex items-center gap-1 font-medium"><List className="h-4 w-4" aria-hidden />History</p><ol className="space-y-1 text-xs text-text-2">{t.events?.map((e, i) => <li key={i}>{dt(e.at)} — {e.from ? `${e.from} → ` : ""}{e.to}{e.note ? ` (${e.note})` : ""}</li>)}</ol></div>
-              <div><p className="mb-1 flex items-center gap-1 font-medium"><CalendarDays className="h-4 w-4" aria-hidden />Runs</p><ul className="space-y-1 text-xs">{t.executions?.map((e) => <li key={e.id}><Link className="text-accent hover:underline" href={`/app/executions/${e.id}`}>{dt(e.created_at)}</Link> · {e.status} · {money(e.cost_usd)}</li>)}{!t.executions?.length && <li className="text-text-3">Not run yet</li>}</ul></div>
+              <div><p className="mb-1 flex items-center gap-1 font-medium"><CalendarDays className="h-4 w-4" aria-hidden />Runs</p><ul className="space-y-1 text-xs">{t.executions?.map((e) => <li key={e.id}><Link className="text-accent hover:underline" href={`/app/executions/view?id=${e.id}`}>{dt(e.created_at)}</Link> · {e.status} · {money(e.cost_usd)}</li>)}{!t.executions?.length && <li className="text-text-3">Not run yet</li>}</ul></div>
             </div>
             <p className="flex items-center gap-1 text-xs text-text-3"><Columns3 className="h-3 w-3" aria-hidden />Status changes are validated on the server.</p>
           </div>); })()}

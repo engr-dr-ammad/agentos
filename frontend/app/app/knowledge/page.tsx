@@ -4,7 +4,7 @@ import { BookOpen, FileText, Plus, Search, Trash2, Upload } from "lucide-react";
 import { useRef, useState } from "react";
 import { toast } from "sonner";
 import { Alert, Badge, Button, Card, CardHeader, Dialog, EmptyState, Field, Input, Loading, PageHeader, Select, StatusBadge, Textarea } from "@/components/ui";
-import { ApiError, del, post } from "@/lib/api";
+import { del, post, upload as uploadFile } from "@/lib/api";
 import { useAction, useList, useMe } from "@/lib/hooks";
 import type { KB, Provider } from "@/lib/types";
 import { ago, can } from "@/lib/utils";
@@ -38,9 +38,7 @@ export default function Knowledge() {
     for (const f of Array.from(files)) {
       const fd = new FormData(); fd.append("file", f);
       try {
-        const res = await fetch(`/api/v1/knowledge/bases/${kb.id}/documents`, { method: "POST", body: fd, headers: { "x-agentos-csrf": "1" } });
-        const data = await res.json();
-        if (!res.ok) throw new ApiError(res.status, data.detail ?? "Upload failed");
+        const data = await uploadFile<{ unchanged?: boolean; chunk_count: number }>(`/knowledge/bases/${kb.id}/documents`, fd);
         toast.success(data.unchanged ? `${f.name} unchanged` : `${f.name} indexed (${data.chunk_count} passages)`);
       } catch (e) { toast.error(`${f.name}: ${(e as Error).message}`); }
     }

@@ -13,9 +13,18 @@ function messageFrom(data: unknown, status: number): string {
   return status >= 500 ? "Something went wrong on our side. Please try again." : `Request failed (${status})`;
 }
 
+import { BROWSER_EDITION, withBase } from "./env";
+
+async function localFetch(path: string, method: string, body: unknown): Promise<Response> {
+  const { handle } = await import("./local/server");
+  const r = await handle(method, path, body);
+  const isText = typeof r.data === "string";
+  return new Response(isText ? (r.data as string) : JSON.stringify(r.data), { status: r.status, headers: { "content-type": isText ? "text/plain" : "application/json" } });
+}
+
 export async function api<T = unknown>(path: string, init: RequestInit & { json?: unknown } = {}): Promise<T> {
   const { json, headers, ...rest } = init;
-  const res = await fetch(`/api/v1${path}`, {
+  const res = BROWSER_EDITION ? await localFetch(path, (rest.method ?? "GET").toUpperCase(), json !== undefined ? json : rest.body) : await fetch(`/api/v1${path}`, {
     credentials: "same-origin",
     ...rest,
     headers: {
@@ -29,11 +38,22 @@ export async function api<T = unknown>(path: string, init: RequestInit & { json?
   const data = text ? (() => { try { return JSON.parse(text); } catch { return text; } })() : null;
   if (!res.ok) {
     if (res.status === 401 && typeof window !== "undefined" && window.location.pathname.startsWith("/app")) {
-      window.location.href = `/login?next=${encodeURIComponent(window.location.pathname)}`;
+      window.location.href = withBase(`/login?next=${encodeURIComponent(window.location.pathname.slice(withBase("").length) || "/app")}`);
     }
     throw new ApiError(res.status, messageFrom(data, res.status), data);
   }
   return data as T;
+}
+
+/** Multipart upload (knowledge documents). */
+export const upload = <T,>(p: string, form: FormData) => api<T>(p, { method: "POST", body: form });
+
+/** Download a text endpoint (e.g. CSV) as a file. */
+export async function download(p: string, filename: string) {
+  const text = await api<string>(p);
+  const url = URL.createObjectURL(new Blob([typeof text === "string" ? text : JSON.stringify(text)], { type: "text/csv" }));
+  Object.assign(document.createElement("a"), { href: url, download: filename }).click();
+  URL.revokeObjectURL(url);
 }
 
 export const get = <T,>(p: string) => api<T>(p);
