@@ -6,15 +6,18 @@ on:
     paths: ["frontend/**", ".github/workflows/pages.yml"]
   workflow_dispatch:
 
+# Pages source: Settings → Pages → "GitHub Actions"
 permissions:
-  contents: write
+  contents: read
+  pages: write
+  id-token: write
 
 concurrency:
   group: pages
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
-  deploy:
+  build:
     runs-on: ubuntu-latest
     defaults: { run: { working-directory: frontend } }
     steps:
@@ -27,13 +30,16 @@ jobs:
         env:
           NEXT_TELEMETRY_DISABLED: "1"
           NEXT_PUBLIC_BASE_PATH: /${{ github.event.repository.name }}
-      - name: Publish to the gh-pages branch
-        uses: peaceiris/actions-gh-pages@v4
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./frontend/out
-          publish_branch: gh-pages
-          force_orphan: true
-          user_name: Ammad Aslam
-          user_email: engr-dr-ammad@users.noreply.github.com
-          commit_message: Deploy AgentOS browser edition
+      - run: touch out/.nojekyll
+      - uses: actions/upload-pages-artifact@v3
+        with: { path: frontend/out }
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
