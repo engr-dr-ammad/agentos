@@ -1,0 +1,76 @@
+@import "tailwindcss";
+@import "@xyflow/react/dist/style.css";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* Design tokens — neutral surfaces, one restrained accent (validated categorical slot 1). */
+:root {
+  --bg: #f7f7f5;
+  --surface: #fcfcfb;
+  --surface-2: #f1f0ed;
+  --border: #e3e2de;
+  --text: #0b0b0b;
+  --text-2: #52514e;
+  --text-3: #74736e;
+  --accent: #2a78d6;
+  --accent-strong: #1c5cab;
+  --accent-soft: #e6f0fc;
+  --good: #0a7d0a;
+  --warning: #9a6700;
+  --serious: #b4471c;
+  --critical: #c62828;
+  --ring: #2a78d6;
+}
+.dark {
+  --bg: #121211;
+  --surface: #1a1a19;
+  --surface-2: #232321;
+  --border: #33332f;
+  --text: #f0efec;
+  --text-2: #c3c2b7;
+  --text-3: #9b9a92;
+  --accent: #3987e5;
+  --accent-strong: #6da7ec;
+  --accent-soft: #16263a;
+  --good: #3fbf3f;
+  --warning: #fab219;
+  --serious: #ec835a;
+  --critical: #f07171;
+  --ring: #6da7ec;
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-border: var(--border);
+  --color-text: var(--text);
+  --color-text-2: var(--text-2);
+  --color-text-3: var(--text-3);
+  --color-accent: var(--accent);
+  --color-accent-strong: var(--accent-strong);
+  --color-accent-soft: var(--accent-soft);
+  --color-good: var(--good);
+  --color-warning: var(--warning);
+  --color-serious: var(--serious);
+  --color-critical: var(--critical);
+  --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+}
+
+html, body { background: var(--bg); color: var(--text); }
+body { font-feature-settings: "cv11", "ss01"; -webkit-font-smoothing: antialiased; }
+:focus-visible { outline: 2px solid var(--ring); outline-offset: 2px; }
+::selection { background: var(--accent-soft); }
+
+/* React Flow theming */
+.react-flow { --xy-background-color: var(--bg); --xy-edge-stroke: var(--text-3); --xy-edge-stroke-selected: var(--accent);
+  --xy-minimap-background-color: var(--surface); --xy-controls-button-background-color: var(--surface);
+  --xy-controls-button-color: var(--text-2); --xy-controls-button-border-color: var(--border);
+  --xy-handle-background-color: var(--accent); --xy-handle-border-color: var(--surface); }
+.react-flow__edge-path { stroke-width: 2; }
+.react-flow__handle { width: 10px; height: 10px; }
+@keyframes pulse-ring { 0%,100% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--accent) 45%, transparent); }
+  50% { box-shadow: 0 0 0 6px color-mix(in srgb, var(--accent) 0%, transparent); } }
+.node-running { animation: pulse-ring 1.6s ease-in-out infinite; }
+@media (prefers-reduced-motion: reduce) { .node-running { animation: none; } }

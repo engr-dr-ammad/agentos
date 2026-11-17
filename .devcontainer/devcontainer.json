@@ -1,0 +1,21 @@
+{
+  "name": "AgentOS",
+  "dockerComposeFile": "docker-compose.yml",
+  "service": "app",
+  "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
+  "features": {
+    "ghcr.io/devcontainers/features/node:1": { "version": "22" }
+  },
+  "forwardPorts": [3000, 8000],
+  "portsAttributes": {
+    "3000": { "label": "AgentOS app", "onAutoForward": "openBrowser" },
+    "8000": { "label": "AgentOS API", "onAutoForward": "silent" }
+  },
+  "postCreateCommand": "bash scripts/setup.sh",
+  "postStartCommand": "bash scripts/dev.sh --background",
+  "customizations": {
+    "codespaces": { "openFiles": ["README.md"] },
+    "vscode": { "extensions": ["ms-python.python", "charliermarsh.ruff", "bradlc.vscode-tailwindcss", "dbaeumer.vscode-eslint"] }
+  },
+  "hostRequirements": { "cpus": 2, "memory": "4gb" }
+}

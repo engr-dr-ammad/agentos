@@ -1,0 +1,37 @@
+# Production-style stack: `cp .env.example .env`, set secrets, then `docker compose up -d --build`.
+services:
+  db:
+    image: pgvector/pgvector:pg16
+    environment:
+      POSTGRES_USER: agentos
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-agentos}
+      POSTGRES_DB: agentos
+    volumes: [pgdata:/var/lib/postgresql/data]
+    healthcheck: { test: ["CMD-SHELL", "pg_isready -U agentos"], interval: 5s, retries: 20 }
+
+  api:
+    build: ./backend
+    env_file: .env
+    environment:
+      AGENTOS_DATABASE_URL: postgresql+asyncpg://agentos_app:${AGENTOS_APP_DB_PASSWORD:-agentos_app}@db:5432/agentos
+      AGENTOS_MIGRATION_DATABASE_URL: postgresql+asyncpg://agentos:${POSTGRES_PASSWORD:-agentos}@db:5432/agentos
+    depends_on: { db: { condition: service_healthy } }
+    restart: unless-stopped
+
+  worker:
+    build: ./backend
+    command: ["python", "-m", "app.engine.worker"]
+    env_file: .env
+    environment:
+      AGENTOS_DATABASE_URL: postgresql+asyncpg://agentos_app:${AGENTOS_APP_DB_PASSWORD:-agentos_app}@db:5432/agentos
+    depends_on: { api: { condition: service_healthy } }
+    restart: unless-stopped
+
+  web:
+    build: { context: ./frontend, args: { BACKEND_URL: "http://api:8000" } }
+    ports: ["3000:3000"]
+    depends_on: [api]
+    restart: unless-stopped
+
+volumes:
+  pgdata:
